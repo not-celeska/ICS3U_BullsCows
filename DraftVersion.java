@@ -1,10 +1,23 @@
+/*
+MISHA BUSHKOV
+ICS3U SUMMATIVE: Bulls and Cows [GAMEPLAY VERS.]
+DATE: 25 / 12 / 2023
+ */
+
+// == IMPORTS =============
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+/*
+TODO: add option to choose number of digits (3, 4, 5, 6). Two player mode.
+ */
+
 // BULLS AND COWS: BASIC ANALOG VERSION.
 public class DraftVersion
 {
+    // == INSTANCE VARIABLES ======================
+
     public static int digitsInCorrectNumber = 4;
     public static int correctNumber;
 
@@ -16,6 +29,8 @@ public class DraftVersion
     // User stats.
     public static int secondsSpentGuessing;
     public static int timesGuessed = 0;
+
+    // == MAIN ===========================
 
     public static void main(String[] args)
     {
@@ -89,8 +104,7 @@ public class DraftVersion
         // write all guesses?
     }
 
-    // 2 player mode?
-    // number of digits? --> 3 4 or 5
+    // == OTHER METHODS ==================
 
     // GENERATE RANDOM NUMBER: Just generates a random number with the length of numDigits.
     public static int generateRandomNumber(int numDigits)
