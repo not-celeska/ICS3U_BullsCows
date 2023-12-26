@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -10,8 +9,13 @@ public class DraftVersion
     public static int correctNumber;
 
     // Array Indexing - for better organization.
+    public static int[] guessFeedback = new int[2];
     final public static int BULLS = 0;
     final public static int COWS = 1;
+
+    // User stats.
+    public static int secondsSpentGuessing;
+    public static int timesGuessed = 0;
 
     public static void main(String[] args)
     {
@@ -19,25 +23,70 @@ public class DraftVersion
 
         // Get the correct number.
         correctNumber = generateRandomNumber(digitsInCorrectNumber);
-        System.out.println(correctNumber);
-        System.out.println(intToArray(correctNumber) + "\n");
 
-        // User guesses
-        int userGuess = getGuess(userInput);
-        System.out.println(userGuess);
-        System.out.println(intToArray(userGuess));
+        // For bug fixing purposes.
+        System.out.print("Have the correct number shown [y / anything else]? ");
+        if (userInput.nextLine().equalsIgnoreCase("y"))
+        {
+            System.out.println("SYSTEM | The correct number is: [" + correctNumber + "].");
+        }
 
-        // Bulls and Cows algorithm
-        System.out.println("\nprinting bulls and cows for " + userGuess);
-        int[] userResults = getGuessFeedback(userGuess);
-        System.out.println("Bulls: " + userResults[BULLS] + "\nCows: " + userResults[COWS]);
+        // Log the start time.
+        long startTime = System.currentTimeMillis();
 
-        // recursive funcion to get all of the digits
+        // User guesses and recieves feedback until user guesses the number.
+        while (guessFeedback[BULLS] != 4)
+        {
+            int userGuess = getGuess(userInput);
 
-        // Compare numbers
+            // THIS IS ONLY HERE FOR THE UI TO LOOK GOOD [DOES NOT NEED TO BE HERE].
+            if (userGuess == correctNumber)
+            {
+                timesGuessed++;
+                break;
+            }
 
-        // Print results
+            // Get feedback.
+            guessFeedback = getGuessFeedback(userGuess);
 
+            // Print feedback.
+            System.out.println("\nSYSTEM | Printing bulls and cows for [" + userGuess + "].");
+            System.out.print("BULLS: " + guessFeedback[BULLS] + " | COWS: " + guessFeedback[COWS] + " | ");
+
+            // Add times guessed.
+            timesGuessed++;
+        }
+
+        // Log the end time.
+        long endTime = System.currentTimeMillis();
+
+        // Convert to minutes and seconds.
+        int seconds = Math.round((endTime - startTime) / 1000);
+        int minutes = 0;
+
+        // If took more than 60 seconds - convert to minutes.
+        if (seconds >= 60)
+        {
+            minutes = seconds / 60;
+            seconds %= 60;
+        }
+
+        // Take time and format it.
+        String timeTook;
+        if (minutes > 0)
+        {
+            timeTook = minutes + "m " + seconds + "s";
+        }
+        else
+        {
+            timeTook = seconds + "s";
+        }
+
+        // Print a buffer + results.
+        System.out.println("\n<>< YOU WON ><><><><><><><><><><><><><><><><><><><><><><>");
+        System.out.println("GUESSES TOOK | " + timesGuessed);
+        System.out.println("TIME SPENT   | " + timeTook);
+        // write all guesses?
     }
 
     // 2 player mode?
@@ -94,7 +143,7 @@ public class DraftVersion
 
                 if (String.valueOf(userGuess).length() != digitsInCorrectNumber)
                 { // If: checks that the user inputted the right number of digits.
-                    System.out.println("\nThe correct number has " + digitsInCorrectNumber + " digits. Try again.");
+                    System.out.println("\nThe correct number has " + digitsInCorrectNumber + " digits [0 does not register as the first one]. Try again.");
                 }
                 else if (!allDigitsAreUnique(userGuess))
                 {
