@@ -9,6 +9,10 @@ public class DraftVersion
     public static int digitsInCorrectNumber = 4;
     public static int correctNumber;
 
+    // Array Indexing - for better organization.
+    final public static int BULLS = 0;
+    final public static int COWS = 1;
+
     public static void main(String[] args)
     {
         Scanner userInput = new Scanner(System.in);
@@ -16,12 +20,17 @@ public class DraftVersion
         // Get the correct number.
         correctNumber = generateRandomNumber(digitsInCorrectNumber);
         System.out.println(correctNumber);
-        System.out.println(intToArray(correctNumber));
+        System.out.println(intToArray(correctNumber) + "\n");
 
         // User guesses
         int userGuess = getGuess(userInput);
         System.out.println(userGuess);
         System.out.println(intToArray(userGuess));
+
+        // Bulls and Cows algorithm
+        System.out.println("\nprinting bulls and cows for " + userGuess);
+        int[] userResults = getGuessFeedback(userGuess);
+        System.out.println("Bulls: " + userResults[BULLS] + "\nCows: " + userResults[COWS]);
 
         // recursive funcion to get all of the digits
 
@@ -87,6 +96,10 @@ public class DraftVersion
                 { // If: checks that the user inputted the right number of digits.
                     System.out.println("\nThe correct number has " + digitsInCorrectNumber + " digits. Try again.");
                 }
+                else if (!allDigitsAreUnique(userGuess))
+                {
+                    System.out.println("\nEnsure that each digit in your guess is unique. Try again.");
+                }
                 else
                 {
                     return userGuess;
@@ -99,6 +112,41 @@ public class DraftVersion
             }
         }
     }
+
+    // ALL DIGITS ARE UNIQUE: Checks that all the digits in a number are unique - this will help not confuse the player in the feedback.
+    public static boolean allDigitsAreUnique(int number)
+    {
+        // We will be using this string reference to get independant numeric values; could have used a ArrayList style.
+        String stringNumber = String.valueOf(number);
+
+        // Go through the whole list to compare each number individually.
+        for (int digitIndex = 0; digitIndex < stringNumber.length(); digitIndex++)
+        {
+            // Get the digit itself and set how many times it was found to 0.
+            int currentDigit = Character.getNumericValue(stringNumber.charAt(digitIndex));
+            int timesDigitFound = 0;
+
+            // Go through the list again to determine how many times this digit appears in the number.
+            for (int allDigits = 0; allDigits < stringNumber.length(); allDigits++)
+            {
+                // If the digit appeared in the number.
+                if (currentDigit == Character.getNumericValue(stringNumber.charAt(allDigits)))
+                {
+                    timesDigitFound ++;
+                }
+            }
+
+            // If the digit ended up showing more than once.
+            if (timesDigitFound > 1)
+            {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
 
     // INT TO ARRAYLIST: Takes an int then coverts it into an array with the integer digits.
     public static ArrayList<Integer> intToArray(int integer)
@@ -116,24 +164,33 @@ public class DraftVersion
         return intArray;
     }
 
-    // GET COWS: Takes the input and correctNumber, returns bulls (right number, wrong place)
-    public static int getCows(ArrayList<Integer> guessedArray)
+    // GET GUESS FEEDBACK: Takes the input and correctNumber, returns bulls (right number and place) and cows (right number wrong place)
+    public static int[] getGuessFeedback(int guess)
     {
-        ArrayList<Integer> correctArray = intToArray(correctNumber); // TODO optimize this to a class variable.
+        int[] guessFeedback = {0, 0}; // Check "Array Indexing" class variables.
+        ArrayList<Integer> guessArray = intToArray(guess);
+        ArrayList<Integer> correctArray = intToArray(correctNumber);
 
-        int cows = 0;
-
-        // check cows for each digit
-        for (int digitGuessed : guessedArray)
+        // Go through the guessed array and compare it to the correct array.
+        for (int digitIndex = 0; digitIndex < String.valueOf(guess).length(); digitIndex++)
         {
-            // TODO work on this next...
+            // Is the guessed digit at the current index even in the correct number?
+            if (correctArray.contains(guessArray.get(digitIndex)))
+            {
+                // Is the digit in the same spot as the digit in the correct number?
+                if (guessArray.get(digitIndex) == correctArray.get(digitIndex))
+                {
+                    guessFeedback[BULLS]++;
+                }
+                else
+                {
+                    guessFeedback[COWS]++;
+                }
+            }
         }
 
-        return cows;
+        return guessFeedback;
     }
-
-    // GET BULLS: Takes the input and correctNumber, returns bulls (right number and place)
-
 
     // setting: use buttons or a keyboard.
 }
